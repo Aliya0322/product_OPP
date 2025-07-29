@@ -54,8 +54,8 @@ class Clothing extends Product {
         return this.#size;
     }
     set size(value) {
-        if(value < 0) {
-            throw new Error('Размер не может быть отрицательным')
+        if (typeof value === 'string' && value.trim() === '') {
+            throw new Error('Размер должен быть непустой строкой');
         }
         this.#size = value;
     }
