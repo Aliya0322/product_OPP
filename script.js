@@ -109,9 +109,26 @@ class ProductCatalog {
         if (criteria.maxPrice !== undefined && product.price > criteria.maxPrice) {
             return false;
         }
-        if (criteria.category && !(product instanceof criteria.category)) {
+
+        if (criteria.minPrice !== undefined && product.price < criteria.minPrice) {
+                return false;
+        }
+
+        if(criteria.category && !(product instanceof criteria.category)) {
             return false;
         }
+
+        if (criteria.expiryDate) {
+            if (product instanceof Food) {
+                const productExpiry = new Date(product.expiryDate);
+                const filterDate = new Date(criteria.expiryDate);
+                return productExpiry >= filterDate;
+            } else {
+                return false;
+            }
+        }
+
+        
         return true;
     });
 }
@@ -120,10 +137,13 @@ class ProductCatalog {
 const catalog = new ProductCatalog();
 catalog.productList.push(
     new Electronics(1, "Phone", 500, 12, "Samsung"),
-    new Clothing(2, "T-Shirt", 20, "M", "Cotton")
+    new Clothing(2, "T-Shirt", 20, "M", "Cotton"),
+    new Food(3, "Bread", 3, "2025-08-08")
 );
 
 const filterCategory = catalog.filter({ category: Electronics });
 const filterPrice = catalog.filter({maxPrice: 600});
+const filterFreshFood = catalog.filter({expiryDate: "2025-08-01"})
 console.log(filterCategory);
 console.log(filterPrice);
+console.log(filterFreshFood);
